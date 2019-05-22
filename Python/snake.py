@@ -7,9 +7,8 @@ import time
 height = 0
 width = 0
 snakeBody = [(0,0)]
-H1 = snakeBody[0]
 
-##directions
+##directions, to go up you need to subtract
 DIR = (0,0)
 UP = (-1,0)
 DOWN = (1,0)
@@ -27,8 +26,8 @@ APPLE = 3
 
 DISPLAY_CHAR = {
     EMPTY: " ",
-    BODY: "O",
     HEAD: "X",
+    BODY: "0",
     APPLE: "*",
 }
 
