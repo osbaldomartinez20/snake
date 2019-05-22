@@ -14,7 +14,7 @@ namespace Snake {
         public static int[] UP = {-1,0};
         public static int[] DOWN = {1,0};
         public static int[] RIGHT = {0,1};
-        public static int[] LEFT = {0, -1};
+        public static int[] LEFT = {0,-1};
 
         //apple's location
         public static int[] APPLE_LOCATION = {0,0};
@@ -55,10 +55,10 @@ namespace Snake {
             IList<int[]> temp = copyList();
             for (int i = 0; i < temp.Count; i++) {
                 if(i == temp.Count-1) {
-                  int[]  x = {(temp[i][0] + dir[0]) % HEIGHT, (temp[i][1] + dir[1]) % WIDTH};
+                  int[]  x = {(temp[i, 0] + dir[0]) % HEIGHT, (temp[i, 1] + dir[1]) % WIDTH};
                   snakeBody[i] = x;
                 } else {
-                    int[] x = {temp[i+1][0] % HEIGHT, temp[i+1][1] % WIDTH};
+                    int[] x = {temp[i+1, 0] % HEIGHT, temp[i+1, 1] % WIDTH};
                     snakeBody[i] = x;
                 }
             }
@@ -93,9 +93,51 @@ namespace Snake {
         }
 
         //function that calculates the snake's new position
-        public static int[] new_position(int[] position, int[] step) {
+        public static int[] newPosition(int[] position, int[] step) {
             int[] n_position = {(position[0] + step[0]) % HEIGHT, (position[1] + step[1]) % WIDTH};
             return n_position;
+        }
+
+        public static string[HEIGHT, WIDTH] gameBoard() {
+            string[,] g_board = new string[HEIGHT, WIDTH];
+            for (int i = 0; i < g_board.GetLength(); i++) {
+                for (int j = 0; g_board[i].Length; j++) {
+                    g_board[i, j] = DISPLAY_CHARS[EMPTY];
+                }
+            } 
+
+            //used to store snake's body in board
+            for (int i = 0; i < snakeBody.Count; i++) {
+                g_board[snakeBody[i,0], snakeBody[i,1]] = DISPLAY_CHARS[BODY];
+            }
+
+            //used to store snake's head in board
+            int h = head();
+            g_board[h[0],h[1]] = DISPLAY_CHARS[HEAD];
+
+            //used to store apple in board
+            g_board[APPLE_LOCATION[0],APPLE_LOCATION[1]] = DISPLAY_CHARS[APPLE];
+
+            return g_board;
+        }
+
+        //function used to render the game
+        public static void gameRender() {
+            string[,] board = gameBoard();
+
+            string top_bottom_borders = "+" + "-" * WIDTH + "+";
+            Console.WriteLine(top_bottom_borders);
+
+            for (int i = 0; i < HEIGHT; i++) {
+                string line = "|";
+                for (int j = 0; j < WIDTH; j++) {
+                    line += board[i,j];
+                }
+                line += "|";
+                Console.WriteLine(line);
+            }
+
+            Console.WriteLine(top_bottom_borders);
         }
 
         public static void Main(string[] args) {
