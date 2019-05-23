@@ -1,3 +1,10 @@
+//library required to use key presses. Use npm install readline
+const readline = require('readline');
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 //global variables that will be used in the game
 //these are used to set the size of the board 
 var HEIGHT = 10;
@@ -72,21 +79,21 @@ var nextPosition = function (position, step) {
 var takeStep = function (position) {
     let temp = [...SNAKE_BODY];
     for (let i = 0; i < temp.length; i++) {
-        if (i == temp.length-1) {
+        if (i == temp.length - 1) {
             SNAKE_BODY[i] = position;
         } else {
-            SNAKE_BODY[i] = temp[i+1];
+            SNAKE_BODY[i] = temp[i + 1];
         }
     }
 }
 
 //stores the game board and returns it
-var gameBoard = function() {
+var gameBoard = function () {
     //sets board to empty strings
     let g_board = [];
-    for(let i = 0; i < HEIGHT; i++) {
+    for (let i = 0; i < HEIGHT; i++) {
         let temp = [];
-        for(let j = 0; j < WIDTH; j++) {
+        for (let j = 0; j < WIDTH; j++) {
             temp.push(DISPLAY_CHARS[EMPTY]);
         }
         g_board.push(temp);
@@ -107,7 +114,7 @@ var gameBoard = function() {
 }
 
 //this renders the game board
-var gameRender = function() {
+var gameRender = function () {
     let board = gameBoard();
 
     let top_bottom_borders = "+";
@@ -120,7 +127,7 @@ var gameRender = function() {
     for (let i = 0; i < HEIGHT; i++) {
         let line = "|";
         for (let j = 0; j < WIDTH; j++) {
-            line += board[i,j];
+            line += board[i][j];
         }
         line += "|";
         console.log(line);
@@ -130,9 +137,38 @@ var gameRender = function() {
 
 }
 
+//let's user play game
+var playGame = function () {
+    //function calls that initialize the game
+    gameInit();
+    appleLocation();
+    gameRender();
 
+    while (true) {
+        sleep(300);
+
+        let u_input = "";
+    }
+}
 
 //this solves the negative mod problem
 var mod = function (x, m) {
     return (x % m + m) % m;
+}
+
+//makes the program sleep for a bit, si that the game is not too fast
+var sleep = function (mils) {
+    let now = new Date().getTime();
+    while (new Date().getTime() < now + mils) {
+    }
+}
+
+rl.on('line', (key, callback) => {
+    callback(null, key.toUpperCase());
+    rl.close();
+});
+
+var t = function() {
+    var w = " ";
+    
 }
