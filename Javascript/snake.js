@@ -41,11 +41,6 @@ var snakeInit = function (coor, dir) {
     SNAKE_BODY.push([...coor]);
 }
 
-//function returns the cooordinate of the snake's head
-var head = function () {
-    return [...SNAKE_HEAD];
-}
-
 //function gives new location for apple
 var appleLocation = function () {
     while (true) {
@@ -69,14 +64,14 @@ var extendBody = function (position) {
 
 //function that calculates the new position of the snake head
 var nextPosition = function (position, step) {
-    var new_pos = [mod(position[0] + step[0], HEIGHT), mod(position[0] + step[0], WIDTH)];
+    let new_pos = [mod(position[0] + step[0], HEIGHT), mod(position[0] + step[0], WIDTH)];
     return new_pos;
 }
 
 //this function makes the snake take a step
 var takeStep = function (position) {
-    var temp = [...SNAKE_BODY];
-    for (var i = 0; i < temp.length; i++) {
+    let temp = [...SNAKE_BODY];
+    for (let i = 0; i < temp.length; i++) {
         if (i == temp.length-1) {
             SNAKE_BODY[i] = position;
         } else {
@@ -85,7 +80,55 @@ var takeStep = function (position) {
     }
 }
 
+//stores the game board and returns it
+var gameBoard = function() {
+    //sets board to empty strings
+    let g_board = [];
+    for(let i = 0; i < HEIGHT; i++) {
+        let temp = [];
+        for(let j = 0; j < WIDTH; j++) {
+            temp.push(DISPLAY_CHARS[EMPTY]);
+        }
+        g_board.push(temp);
+    }
 
+    //stores body of snake
+    for (let k = 0; k < SNAKE_BODY.length; k++) {
+        g_board[SNAKE_BODY[k][0]][SNAKE_BODY[k][1]] = DISPLAY_CHARS[BODY];
+    }
+
+    //stores head
+    g_board[SNAKE_HEAD[0]][SNAKE_HEAD[1]] = DISPLAY_CHARS[HEAD];
+
+    //stores apple location
+    g_board[APPLE_LOCATION[0]][APPLE_LOCATION[1]] = DISPLAY_CHARS[APPLE];
+
+    return g_board;
+}
+
+//this renders the game board
+var gameRender = function() {
+    let board = gameBoard();
+
+    let top_bottom_borders = "+";
+    for (let k = 0; k < WIDTH; k++) {
+        top_bottom_borders += "-";
+    }
+    top_bottom_borders += "+";
+    console.log(top_bottom_borders);
+
+    for (let i = 0; i < HEIGHT; i++) {
+        let line = "|";
+        for (let j = 0; j < WIDTH; j++) {
+            line += board[i,j];
+        }
+        line += "|";
+        console.log(line);
+    }
+
+    console.log(top_bottom_borders);
+
+}
 
 
 
