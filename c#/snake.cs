@@ -59,7 +59,7 @@ namespace Snake {
             List<int[]> temp = copyList();
             for (int i = 0; i < temp.Count; i++) {
                 if(i == temp.Count-1) {
-                  int[]  x = {(dir[0]) % HEIGHT, (dir[1]) % WIDTH};
+                  int[]  x = {mod(dir[0],HEIGHT), mod(dir[1],WIDTH)};
                   snakeBody[i] = x;
                 } else {
                     int[] x = {temp[i+1][0], temp[i+1][1]};
@@ -99,7 +99,7 @@ namespace Snake {
 
         //function that calculates the snake's new position
         public static int[] newPosition(int[] position, int[] step) {
-            int[] n_position = {(position[0] + step[0]) % HEIGHT, (position[1] + step[1]) % WIDTH};
+            int[] n_position = {mod(position[0] + step[0],HEIGHT), mod(position[1] + step[1],WIDTH)};
             return n_position;
         }
 
@@ -207,6 +207,11 @@ namespace Snake {
                 temp.Add(snakeBody[i]);
             }
             return temp;
+        }
+    
+        //solves the negative mod problem
+        public static int mod(int x, int m) {
+            return (x%m + m)%m;
         }
 
     }
