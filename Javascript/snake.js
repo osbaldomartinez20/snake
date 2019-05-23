@@ -4,8 +4,8 @@ var HEIGHT = 10;
 var WIDTH = 20;
 
 //variables used for the location of game objects
-var SNAKE_HEAD = [];
-var SNAKE_BODY = [HEIGHT / 2, WIDTH / 2];
+var SNAKE_HEAD = [HEIGHT / 2, WIDTH / 2];
+var SNAKE_BODY = [];
 var APPLE_LOCATION = [0, 0];
 
 //variables used for direction
@@ -20,7 +20,6 @@ var EMPTY = 0;
 var HEAD = 1;
 var BODY = 2;
 var APPLE = 3;
-
 var DISPLAY_CHARS = [" ", "X", "0", "*"];
 
 //variables used for user input comparison
@@ -28,3 +27,20 @@ var INPUT_UP = "W";
 var INPUT_DOWN = "S";
 var INPUT_RIGHT = "D";
 var INPUT_LEFT = "A";
+
+//function that initializes the game with a board of height h and width w.
+var gameInit = function (h=10, w=20) {
+    HEIGHT = h;
+    WIDTH = w;
+    snakeInit(SNAKE_HEAD);
+}
+
+//initializes the snake with a coordinate coor.
+var snakeInit = function (coor) {
+    SNAKE_BODY.push(coor);
+}
+
+//initializes the apple with a coordinate coor.
+var appleInit = function (coor) {
+    APPLE_LOCATION = [...coor];
+}
