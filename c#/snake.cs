@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
 
 namespace Snake {
     class snake {
+
         //global variables
-        public static int HEIGHT;
-        public static int WIDTH;
-        public static IList<int[]> snakeBody = new List<int[]>();
+        public static int HEIGHT = 10;
+        public static int WIDTH = 20;
+        public static List<int[]> snakeBody = new List<int[]>();
         public static Random rand = new Random();
 
         //Directions. to go up you need to subtract because of how the coordinates work
-        public static int[] DIRECTION = {0,0};
+        public static int[] DIRECTION = {HEIGHT/2,WIDTH/2};
         public static int[] UP = {-1,0};
         public static int[] DOWN = {1,0};
         public static int[] RIGHT = {0,1};
@@ -18,6 +21,8 @@ namespace Snake {
 
         //apple's location
         public static int[] APPLE_LOCATION = {0,0};
+
+        public static int[] SNAKE = {HEIGHT/2,WIDTH/2};
 
         //this is to make easier to choose which charactter to display
         public static int EMPTY = 0;
@@ -34,9 +39,7 @@ namespace Snake {
         public static string INPUT_LEFT = "A";
         
         //function used to initialize the game
-        public static void gameInit(int h, int w) {
-            HEIGHT = h;
-            WIDTH = w;
+        public static void gameInit() {
             sankeInit(UP);
         }
 
@@ -46,22 +49,24 @@ namespace Snake {
             DIRECTION = dir;
         }
 
+        //initializes apple location
         public static void appleInit(int[] dir) {
             APPLE_LOCATION = dir;
         }
 
         //this makes the snake move
         public static void takeStep(int[] dir) {
-            IList<int[]> temp = copyList();
+            List<int[]> temp = copyList();
             for (int i = 0; i < temp.Count; i++) {
                 if(i == temp.Count-1) {
-                  int[]  x = {(temp[i, 0] + dir[0]) % HEIGHT, (temp[i, 1] + dir[1]) % WIDTH};
+                  int[]  x = {(dir[0]) % HEIGHT, (dir[1]) % WIDTH};
                   snakeBody[i] = x;
                 } else {
-                    int[] x = {temp[i+1, 0] % HEIGHT, temp[i+1, 1] % WIDTH};
+                    int[] x = {temp[i+1][0], temp[i+1][1]};
                     snakeBody[i] = x;
                 }
             }
+            SNAKE = snakeBody[snakeBody.Count-1];
         }
 
         //function that extends the body of the snake
@@ -76,7 +81,7 @@ namespace Snake {
 
         //returns the position of the headf of the snake
         public static int[] head() {
-            return snakeBody[-1];
+            return SNAKE;
         }
 
         //assigns a new location for the apple
@@ -98,21 +103,21 @@ namespace Snake {
             return n_position;
         }
 
-        public static string[HEIGHT, WIDTH] gameBoard() {
+        public static string[,] gameBoard() {
             string[,] g_board = new string[HEIGHT, WIDTH];
-            for (int i = 0; i < g_board.GetLength(); i++) {
-                for (int j = 0; g_board[i].Length; j++) {
+            for (int i = 0; i < HEIGHT; i++) {
+                for (int j = 0; j < WIDTH; j++) {
                     g_board[i, j] = DISPLAY_CHARS[EMPTY];
                 }
             } 
 
             //used to store snake's body in board
             for (int i = 0; i < snakeBody.Count; i++) {
-                g_board[snakeBody[i,0], snakeBody[i,1]] = DISPLAY_CHARS[BODY];
+                g_board[snakeBody[i][0], snakeBody[i][1]] = DISPLAY_CHARS[BODY];
             }
 
             //used to store snake's head in board
-            int h = head();
+            int[] h = head();
             g_board[h[0],h[1]] = DISPLAY_CHARS[HEAD];
 
             //used to store apple in board
@@ -125,7 +130,11 @@ namespace Snake {
         public static void gameRender() {
             string[,] board = gameBoard();
 
-            string top_bottom_borders = "+" + "-" * WIDTH + "+";
+            string top_bottom_borders = "+";
+            for (int i = 0; i < WIDTH; i++) {
+                top_bottom_borders += "-";
+            }
+            top_bottom_borders += "+";
             Console.WriteLine(top_bottom_borders);
 
             for (int i = 0; i < HEIGHT; i++) {
@@ -140,8 +149,55 @@ namespace Snake {
             Console.WriteLine(top_bottom_borders);
         }
 
+        //function allows user to play game
+        public static void playGame() {
+            //these method calls initialize the game
+            gameInit();
+            appleLocation();
+            gameRender();
+
+            //the game loop
+            while (true) {
+                //sleeps for n miliseconds
+                System.Threading.Thread.Sleep(300);
+
+                //user input for the game
+                string u_input = "";
+                if(Console.KeyAvailable == true) {
+                    u_input = Convert.ToString(Console.ReadKey().Key);
+                }
+                if (string.Compare(u_input, INPUT_UP) == 0 && !(DOWN.SequenceEqual(DIRECTION))) {
+                    setDirection(UP);
+                } else if(string.Compare(u_input, INPUT_DOWN) == 0 && !(UP.SequenceEqual(DIRECTION))) {
+                    setDirection(DOWN);
+                } else if(string.Compare(u_input, INPUT_RIGHT) == 0 && !(LEFT.SequenceEqual(DIRECTION))) {
+                    setDirection(RIGHT);
+                } else if(string.Compare(u_input, INPUT_LEFT) == 0 && !(RIGHT.SequenceEqual(DIRECTION))) {
+                    setDirection(LEFT);
+                }
+
+                //checks to see if snake crashed into itself
+                int[] n_pos = newPosition(head(), DIRECTION); 
+                if (snakeBody.IndexOf(n_pos) >= 0) {
+                    Console.WriteLine("You died!");
+                }
+
+                //if apple was eaten make new apple
+                if(APPLE_LOCATION.SequenceEqual(n_pos)) {
+                    extendBody(n_pos);
+                    appleLocation();
+                }
+
+                //take the next step
+                takeStep(n_pos);
+
+                gameRender();
+
+            }
+        }
+
         public static void Main(string[] args) {
-            
+            playGame();
         }
 
         //this copies the list and returns the copy
@@ -152,5 +208,6 @@ namespace Snake {
             }
             return temp;
         }
+
     }
 }

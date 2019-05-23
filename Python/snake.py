@@ -59,7 +59,7 @@ def takeStep(position) :
         if y == len(snakeBody)-1 :
             snakeBody[y] = ((snakeBody[y][0] + position[0]) % height), ((snakeBody[y][1] + position[1]) % width)
         else :
-            snakeBody[y] = ((temp[y+1][0]) % height), ((temp[y+1][1]) % width)
+            snakeBody[y] = ((temp[y+1][0])), ((temp[y+1][1]))
 
 ##extends the snake's body
 def extendBody(position) :
@@ -134,7 +134,7 @@ def play_game() :
     gameRender()
     while True :
 
-        #wait half a second
+        #wait third of a second
         time.sleep(0.3)
 
         ##this handles user input and assignes the new direction to the snake
@@ -154,6 +154,7 @@ def play_game() :
         #checks whether snake crashed into itself
         new_position = next_position(head(),DIR)
         if new_position in snakeBody :
+            print("You died!")
             break
 
         ##chacks whether the snake ate the apple
